@@ -1,25 +1,23 @@
 app_name = "fab_hr_italy"
 app_title = "HR Italy"
 app_publisher = "fabricators"
-app_description = "App to manage Italian HR fiscality"
+app_description = "Italian HR, payroll costing, and employee liability management for ERPNext"
 app_email = "support@fabricators.ltd"
 app_license = "agpl-3.0"
+app_home = "/app/fab-hr-italy"
 
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext", "hrms", "fab"]
 
-# Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "fab_hr_italy",
-# 		"logo": "/assets/fab_hr_italy/logo.png",
-# 		"title": "HR Italy",
-# 		"route": "/fab_hr_italy",
-# 		"has_permission": "fab_hr_italy.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+	{
+		"name": app_name,
+		"title": app_title,
+		"route": app_home,
+	}
+]
 
 # Includes in <head>
 # ------------------
@@ -42,8 +40,14 @@ app_license = "agpl-3.0"
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
 
-# include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+	"Company": "public/js/company.js",
+	"Holiday List": "public/js/holiday_list.js",
+}
+
+fab_hr_italy_employee_cost_sources = [
+	"fab_hr_italy.hr_italy.employee_cost_sources.get_core_employee_cost_sources"
+]
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -85,8 +89,8 @@ app_license = "agpl-3.0"
 # Installation
 # ------------
 
-# before_install = "fab_hr_italy.install.before_install"
-# after_install = "fab_hr_italy.install.after_install"
+after_install = "fab_hr_italy.install.after_install"
+after_migrate = "fab_hr_italy.install.after_migrate"
 
 # Uninstallation
 # ------------
@@ -138,13 +142,11 @@ app_license = "agpl-3.0"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Company": {
+		"validate": "fab_hr_italy.company_setup.validate_company_cost_setup",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
@@ -176,9 +178,13 @@ app_license = "agpl-3.0"
 # ------------------------------
 #
 # Specify custom mixins to extend the standard doctype controller.
-# extend_doctype_class = {
+# override_doctype_class = {
 # 	"Task": "fab_hr_italy.custom.task.CustomTaskMixin"
 # }
+override_doctype_class = {
+	"Salary Slip": "fab_hr_italy.overrides.salary_slip.SalarySlip",
+	"Payroll Entry": "fab_hr_italy.overrides.payroll_entry.PayrollEntry",
+}
 
 # Overriding Methods
 # ------------------------------
@@ -255,4 +261,3 @@ app_license = "agpl-3.0"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
-

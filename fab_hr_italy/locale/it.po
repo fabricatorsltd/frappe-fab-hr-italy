@@ -1,0 +1,141 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version:  fab_hr_italy\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-27 15:00+0000\n"
+"PO-Revision-Date: 2026-04-27 15:00+0000\n"
+"Last-Translator: FAB Team\n"
+"Language: it\n"
+"Language-Team: Italian\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+msgid "Accrual Journal Entry for salaries from {0} to {1}"
+msgstr "Registrazione contabile di competenza per stipendi dal {0} al {1}"
+
+msgid "Company Cost Basis"
+msgstr "Base costo aziendale"
+
+msgid "Company Cost Basis Amount"
+msgstr "Importo base costo aziendale"
+
+msgid "Enable Italy HR Payroll"
+msgstr "Abilita gestione HR payroll Italia"
+
+msgid "Apply Employee-Specific Italy HR Rates"
+msgstr "Applica aliquote HR Italia specifiche per dipendente"
+
+msgid "Employer Contribution Amount"
+msgstr "Importo contributi datore di lavoro"
+
+msgid "Employer Contribution Rate Override"
+msgstr "Aliquota sostitutiva contributi datore di lavoro"
+
+msgid "Employer Contribution Expense Account"
+msgstr "Conto costi contributi datore di lavoro"
+
+msgid "Employer Contribution Payable Account"
+msgstr "Conto debiti contributi datore di lavoro"
+
+msgid "Employer Contribution Rate"
+msgstr "Aliquota contributi datore di lavoro"
+
+msgid "Employer Insurance Amount"
+msgstr "Importo assicurazione datore di lavoro"
+
+msgid "Employer Insurance Rate Override"
+msgstr "Aliquota sostitutiva assicurazione datore di lavoro"
+
+msgid "Employer Insurance Expense Account"
+msgstr "Conto costi assicurazione datore di lavoro"
+
+msgid "Employer Insurance Payable Account"
+msgstr "Conto debiti assicurazione datore di lavoro"
+
+msgid "Employer Insurance Rate"
+msgstr "Aliquota assicurazione datore di lavoro"
+
+msgid "Employer contribution"
+msgstr "contributi datore di lavoro"
+
+msgid "Employer insurance"
+msgstr "assicurazione datore di lavoro"
+
+msgid "Gross Pay"
+msgstr "Retribuzione lorda"
+
+msgid "HR Italy"
+msgstr "HR Italia"
+
+msgid "Italian HR, payroll costing, and employee liability management for ERPNext"
+msgstr "Gestione HR italiana, costing payroll e passivita dipendenti per ERPNext"
+
+msgid "Italy Company Cost"
+msgstr "Costo aziendale Italia"
+
+msgid "Italy HR Payroll"
+msgstr "HR Payroll Italia"
+
+msgid "Italy HR Payroll Overrides"
+msgstr "Override HR Payroll Italia"
+
+msgid "Italy HR Payroll Accounts"
+msgstr "Conti HR Payroll Italia"
+
+msgid "Missing Italy HR account configuration for {0} on Company {1}"
+msgstr "Configurazione contabile HR Italia mancante per {0} nell'azienda {1}"
+
+msgid "Post Company Cost In Payroll Accrual Entry"
+msgstr "Contabilizza il costo aziendale nella scrittura di competenza payroll"
+
+msgid "Payroll Entry"
+msgstr "Elaborazione paghe"
+
+msgid "Payroll Entries"
+msgstr "Elaborazioni paghe"
+
+msgid "Salary Slip"
+msgstr "Cedolino paga"
+
+msgid "Salary Slips"
+msgstr "Cedolini paga"
+
+msgid "Set holiday date range to {0}."
+msgstr "Intervallo festivita impostato su {0}."
+
+msgid "Salary Structure Assignment"
+msgstr "Assegnazione struttura retributiva"
+
+msgid "Salary Structure Assignments"
+msgstr "Assegnazioni struttura retributiva"
+
+msgid "TFR Accrual Amount"
+msgstr "Importo accantonamento TFR"
+
+msgid "TFR Accrual Rate"
+msgstr "Aliquota accantonamento TFR"
+
+msgid "TFR Accrual Rate Override"
+msgstr "Aliquota sostitutiva accantonamento TFR"
+
+msgid "TFR Expense Account"
+msgstr "Conto costi TFR"
+
+msgid "TFR Payable Account"
+msgstr "Conto debiti TFR"
+
+msgid "TFR accrual"
+msgstr "accantonamento TFR"
+
+msgid "Total Company Cost"
+msgstr "Costo aziendale totale"
+
+msgid "Department"
+msgstr "Dipartimento"
+
+msgid "Departments"
+msgstr "Dipartimenti"

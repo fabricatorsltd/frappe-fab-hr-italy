@@ -1,0 +1,424 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 0,
+ "autoname": "naming_series:",
+ "creation": "2026-04-28 15:10:00.000000",
+ "doctype": "DocType",
+ "document_type": "Transaction",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "company",
+  "cost_month",
+  "column_break_identity",
+  "employee",
+  "employee_name",
+  "employee_identifier",
+  "currency",
+  "source_type",
+  "source_reference",
+  "notes",
+  "employment_section",
+  "workplace",
+  "job_title",
+  "department_name",
+  "contract_kind",
+  "column_break_employment",
+  "contract_type",
+  "contract_duration",
+  "compensation_frequency",
+  "contract_start_date",
+  "contract_end_date",
+  "cost_section",
+  "gross_agreed_amount",
+  "net_monthly_amount",
+  "variable_gross_amount",
+  "gross_monthly_amount",
+  "employer_contribution_amount",
+  "column_break_costs",
+  "inail_amount",
+  "direct_cost_amount",
+  "tfr_accrual_amount",
+  "thirteenth_accrual_amount",
+  "fourteenth_accrual_amount",
+  "other_months_accrual_amount",
+  "leave_accrual_amount",
+  "indirect_cost_accrued_amount",
+  "indirect_cost_paid_amount",
+  "expense_reimbursement_amount",
+  "total_company_cost",
+  "balances_section",
+  "leave_balance_days",
+  "permit_balance_days",
+  "total_balance_days",
+  "residual_value_amount",
+  "tfr_balance_amount",
+  "accounting_section",
+  "accrual_journal_entry"
+ ],
+ "fields": [
+  {
+   "default": "HRI-ECE-.YYYY.-",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "HRI-ECE-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company",
+   "read_only_depends_on": "eval:doc.employee",
+   "reqd": 1
+  },
+  {
+   "description": "Stored as the first day of the month.",
+   "fieldname": "cost_month",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Reference Month",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_identity",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fetch_if_empty": 1,
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only_depends_on": "eval:doc.employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_number",
+   "fetch_if_empty": 1,
+   "fieldname": "employee_identifier",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee Identifier",
+   "mandatory_depends_on": "eval:!doc.employee",
+   "read_only_depends_on": "eval:doc.employee"
+  },
+  {
+   "fetch_from": "company.default_currency",
+   "fetch_if_empty": 1,
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "default": "Manual",
+   "fieldname": "source_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Source Type",
+   "options": "\nManual",
+   "reqd": 1
+  },
+  {
+   "fieldname": "source_reference",
+   "fieldtype": "Data",
+   "label": "Source Reference"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "employment_section",
+   "fieldtype": "Section Break",
+   "label": "Employment Details"
+  },
+  {
+   "fetch_from": "employee.branch",
+   "fetch_if_empty": 1,
+   "fieldname": "workplace",
+   "fieldtype": "Data",
+   "label": "Workplace",
+   "read_only_depends_on": "eval:doc.employee"
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fetch_if_empty": 1,
+   "fieldname": "job_title",
+   "fieldtype": "Data",
+   "label": "Job Title",
+   "read_only_depends_on": "eval:doc.employee"
+  },
+  {
+   "fetch_from": "employee.department",
+   "fetch_if_empty": 1,
+   "fieldname": "department_name",
+   "fieldtype": "Data",
+   "label": "Department",
+   "read_only_depends_on": "eval:doc.employee"
+  },
+  {
+   "fetch_from": "employee.employment_type",
+   "fetch_if_empty": 1,
+   "fieldname": "contract_kind",
+   "fieldtype": "Data",
+   "label": "Contract Category",
+   "read_only_depends_on": "eval:doc.employee"
+  },
+  {
+   "fieldname": "column_break_employment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contract_type",
+   "fieldtype": "Data",
+   "label": "Contract Type"
+  },
+  {
+   "fieldname": "contract_duration",
+   "fieldtype": "Data",
+   "label": "Contract Duration"
+  },
+  {
+   "fieldname": "compensation_frequency",
+   "fieldtype": "Data",
+   "label": "Compensation Frequency"
+  },
+  {
+   "fetch_from": "employee.date_of_joining",
+   "fetch_if_empty": 1,
+   "fieldname": "contract_start_date",
+   "fieldtype": "Date",
+   "label": "Contract Start Date",
+   "read_only_depends_on": "eval:doc.employee"
+  },
+  {
+   "fetch_from": "employee.contract_end_date",
+   "fetch_if_empty": 1,
+   "fieldname": "contract_end_date",
+   "fieldtype": "Date",
+   "label": "Contract End Date",
+   "read_only_depends_on": "eval:doc.employee"
+  },
+  {
+   "fieldname": "cost_section",
+   "fieldtype": "Section Break",
+   "label": "Cost Breakdown"
+  },
+  {
+   "fieldname": "gross_agreed_amount",
+   "fieldtype": "Currency",
+   "label": "Gross Agreed Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "net_monthly_amount",
+   "fieldtype": "Currency",
+   "label": "Net Monthly Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "variable_gross_amount",
+   "fieldtype": "Currency",
+   "label": "Variable Gross Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "gross_monthly_amount",
+   "fieldtype": "Currency",
+   "label": "Gross Monthly Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "employer_contribution_amount",
+   "fieldtype": "Currency",
+   "label": "Employer Contribution Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "column_break_costs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "inail_amount",
+   "fieldtype": "Currency",
+   "label": "INAIL Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "direct_cost_amount",
+   "fieldtype": "Currency",
+   "label": "Direct Cost Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "tfr_accrual_amount",
+   "fieldtype": "Currency",
+   "label": "TFR Accrual Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "thirteenth_accrual_amount",
+   "fieldtype": "Currency",
+   "label": "Thirteenth Accrual Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "fourteenth_accrual_amount",
+   "fieldtype": "Currency",
+   "label": "Fourteenth Accrual Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "other_months_accrual_amount",
+   "fieldtype": "Currency",
+   "label": "Other Months Accrual Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "leave_accrual_amount",
+   "fieldtype": "Currency",
+   "label": "Leave Accrual Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "indirect_cost_accrued_amount",
+   "fieldtype": "Currency",
+   "label": "Indirect Cost Accrued Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "indirect_cost_paid_amount",
+   "fieldtype": "Currency",
+   "label": "Indirect Cost Paid Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "expense_reimbursement_amount",
+   "fieldtype": "Currency",
+   "label": "Expense Reimbursement Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "total_company_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Company Cost",
+   "options": "currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "balances_section",
+   "fieldtype": "Section Break",
+   "label": "Balances"
+  },
+  {
+   "fieldname": "leave_balance_days",
+   "fieldtype": "Float",
+   "label": "Leave Balance Days"
+  },
+  {
+   "fieldname": "permit_balance_days",
+   "fieldtype": "Float",
+   "label": "Permit Balance Days"
+  },
+  {
+   "fieldname": "total_balance_days",
+   "fieldtype": "Float",
+   "label": "Total Balance Days"
+  },
+  {
+   "fieldname": "residual_value_amount",
+   "fieldtype": "Currency",
+   "label": "Residual Value Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "tfr_balance_amount",
+   "fieldtype": "Currency",
+   "label": "TFR Balance Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "accounting_section",
+   "fieldtype": "Section Break",
+   "label": "Accounting"
+  },
+  {
+   "fieldname": "accrual_journal_entry",
+   "fieldtype": "Link",
+   "label": "Accrual Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-28 15:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "HR Italy",
+ "name": "Employee Cost Entry",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "employee_name,employee_identifier,company,workplace,job_title,source_reference",
+ "sort_field": "cost_month",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "employee_name",
+ "track_changes": 1
+}

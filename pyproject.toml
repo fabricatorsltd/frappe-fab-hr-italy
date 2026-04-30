@@ -3,7 +3,7 @@ name = "fab_hr_italy"
 authors = [
     { name = "fabricators", email = "support@fabricators.ltd"}
 ]
-description = "App to manage Italian HR fiscality"
+description = "Italian HR, payroll costing, and employee liability management for ERPNext"
 requires-python = ">=3.14"
 readme = "README.md"
 dynamic = ["version"]
