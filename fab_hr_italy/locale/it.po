@@ -139,3 +139,19 @@ msgstr "Dipartimento"
 
 msgid "Departments"
 msgstr "Dipartimenti"
+
+#: fab_hr_italy/hr_italy/report/employee_cost_summary/employee_cost_summary.py
+msgid "Month"
+msgstr "Mese"
+
+#: fab_hr_italy/hr_italy/report/employee_cost_summary/employee_cost_summary.py
+msgid "Gross"
+msgstr "Lordo"
+
+#: fab_hr_italy/hr_italy/report/employee_cost_summary/employee_cost_summary.py
+msgid "Contributions"
+msgstr "Contributi"
+
+#: fab_hr_italy/hr_italy/report/employee_cost_summary/employee_cost_summary.py
+msgid "Reimbursements"
+msgstr "Rimborsi"
