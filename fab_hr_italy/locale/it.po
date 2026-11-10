@@ -169,8 +169,18 @@ msgid "Contract type {0} is listed more than once in Accounts per Contract Type.
 msgstr "Il tipo di contratto {0} compare più di una volta in Conti per tipo di contratto."
 
 #: fab_hr_italy/company_setup.py
-msgid "Account {0} for contract type {1} must belong to company {2}."
-msgstr "Il conto {0} per il tipo di contratto {1} deve appartenere all'azienda {2}."
+msgid "Contract type {0}: {1} must be an enabled {2} ledger of company {3}."
+msgstr "Tipo di contratto {0}: {1} deve essere un conto attivo, non di gruppo, di tipo {2} dell'azienda {3}."
+
+msgid "Contract Type"
+msgstr "Tipo di contratto"
+
+#: fab_hr_italy/install.py
+msgid "Gross Pay Expense Account"
+msgstr "Conto costi retribuzione lorda"
+
+msgid "Payroll Payable Account"
+msgstr "Conto debiti retribuzioni"
 
 msgid "Employee Cost Contract Type Account"
 msgstr "Conto costo del personale per tipo di contratto"
