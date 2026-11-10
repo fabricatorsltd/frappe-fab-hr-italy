@@ -263,20 +263,37 @@ def validate_contract_type_accounts(document: Any, company: str) -> None:
 	for row in get_document_value(document, "fab_hri_contract_type_accounts") or []:
 		contract_type = cstr(get_document_value(row, "contract_type")).strip().upper()
 		if contract_type in seen:
-			frappe.throw(_("Contract type {0} is listed more than once in Accounts per Contract Type.").format(contract_type))
+			frappe.throw(
+				_("Contract type {0} is listed more than once in Accounts per Contract Type.").format(
+					contract_type
+				)
+			)
 		seen.add(contract_type)
 
 		for fieldname in CONTRACT_TYPE_ACCOUNT_FIELDS:
 			account = cstr(get_document_value(row, fieldname)).strip()
 			if not account:
 				continue
-			account_company = frappe.get_cached_value("Account", account, "company")
-			if account_company and account_company != company:
+			root_type = "Expense" if fieldname.endswith("_expense_account") else "Liability"
+			if not is_company_ledger(account, company, root_type):
 				frappe.throw(
-					_("Account {0} for contract type {1} must belong to company {2}.").format(
-						account, contract_type, company
+					_("Contract type {0}: {1} must be an enabled {2} ledger of company {3}.").format(
+						contract_type, account, _(root_type), company
 					)
 				)
+
+
+def is_company_ledger(account: str, company: str, root_type: str) -> bool:
+	values = frappe.get_cached_value(
+		"Account", account, ["company", "is_group", "root_type", "disabled"], as_dict=True
+	)
+	return bool(
+		values
+		and values.company == company
+		and not values.is_group
+		and not values.disabled
+		and values.root_type == root_type
+	)
 
 
 def ensure_default_expense_account(company: str, account_name: str) -> str:

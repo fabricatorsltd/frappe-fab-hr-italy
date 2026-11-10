@@ -80,9 +80,23 @@ class TestEmployeeCostAccounting(unittest.TestCase):
 	def test_build_employee_cost_accrual_accounts_splits_lines_by_contract_type(self):
 		config = make_full_cost_config()
 		rows = [
-			{"contract_type": "EMPLOYEE", "gross_monthly_amount": 1000, "employer_contribution_amount": 300, "inail_amount": 10, "tfr_accrual_amount": 74.1},
-			{"contract_type": "COLLABORATOR", "gross_monthly_amount": 2000, "employer_contribution_amount": 480},
-			{"contract_type": " collaborator ", "gross_monthly_amount": 500, "employer_contribution_amount": 120},
+			{
+				"contract_type": "EMPLOYEE",
+				"gross_monthly_amount": 1000,
+				"employer_contribution_amount": 300,
+				"inail_amount": 10,
+				"tfr_accrual_amount": 74.1,
+			},
+			{
+				"contract_type": "COLLABORATOR",
+				"gross_monthly_amount": 2000,
+				"employer_contribution_amount": 480,
+			},
+			{
+				"contract_type": " collaborator ",
+				"gross_monthly_amount": 500,
+				"employer_contribution_amount": 120,
+			},
 		]
 		overrides = {
 			"COLLABORATOR": {
@@ -101,7 +115,9 @@ class TestEmployeeCostAccounting(unittest.TestCase):
 		self.assertEqual(lookup[("Payroll Payable - TC", False)]["credit_in_account_currency"], 3500.0)
 		self.assertEqual(lookup[("Contributions - TC", True)]["debit_in_account_currency"], 300.0)
 		self.assertEqual(lookup[("Contributions Payable - TC", False)]["credit_in_account_currency"], 300.0)
-		self.assertEqual(lookup[("Collaborator Contributions - TC", True)]["debit_in_account_currency"], 600.0)
+		self.assertEqual(
+			lookup[("Collaborator Contributions - TC", True)]["debit_in_account_currency"], 600.0
+		)
 		self.assertEqual(
 			lookup[("Collaborator Contributions Payable - TC", False)]["credit_in_account_currency"], 600.0
 		)
@@ -115,18 +131,70 @@ class TestEmployeeCostAccounting(unittest.TestCase):
 	def test_build_employee_cost_accrual_accounts_without_override_is_unchanged(self):
 		config = make_full_cost_config()
 		rows = [
-			{"contract_type": "EMPLOYEE", "gross_monthly_amount": 1000.005, "employer_contribution_amount": 300, "inail_amount": 10, "tfr_accrual_amount": 74.1},
-			{"contract_type": "COLLABORATOR", "gross_monthly_amount": 2000.004, "employer_contribution_amount": 480, "indirect_cost_accrued_amount": 100, "indirect_cost_paid_amount": 20},
+			{
+				"contract_type": "EMPLOYEE",
+				"gross_monthly_amount": 1000.005,
+				"employer_contribution_amount": 300,
+				"inail_amount": 10,
+				"tfr_accrual_amount": 74.1,
+			},
+			{
+				"contract_type": "COLLABORATOR",
+				"gross_monthly_amount": 2000.004,
+				"employer_contribution_amount": 480,
+				"indirect_cost_accrued_amount": 100,
+				"indirect_cost_paid_amount": 20,
+			},
 		]
 		expected = [
-			{"account": "Gross Pay - TC", "debit_in_account_currency": 3080.01, "credit_in_account_currency": 0.0, "cost_center": "Main - TC"},
-			{"account": "Payroll Payable - TC", "debit_in_account_currency": 0.0, "credit_in_account_currency": 3080.01, "cost_center": "Main - TC"},
-			{"account": "Contributions - TC", "debit_in_account_currency": 780.0, "credit_in_account_currency": 0.0, "cost_center": "Main - TC"},
-			{"account": "Contributions Payable - TC", "debit_in_account_currency": 0.0, "credit_in_account_currency": 780.0, "cost_center": "Main - TC"},
-			{"account": "Insurance - TC", "debit_in_account_currency": 10.0, "credit_in_account_currency": 0.0, "cost_center": "Main - TC"},
-			{"account": "Insurance Payable - TC", "debit_in_account_currency": 0.0, "credit_in_account_currency": 10.0, "cost_center": "Main - TC"},
-			{"account": "TFR - TC", "debit_in_account_currency": 74.1, "credit_in_account_currency": 0.0, "cost_center": "Main - TC"},
-			{"account": "TFR Payable - TC", "debit_in_account_currency": 0.0, "credit_in_account_currency": 74.1, "cost_center": "Main - TC"},
+			{
+				"account": "Gross Pay - TC",
+				"debit_in_account_currency": 3080.01,
+				"credit_in_account_currency": 0.0,
+				"cost_center": "Main - TC",
+			},
+			{
+				"account": "Payroll Payable - TC",
+				"debit_in_account_currency": 0.0,
+				"credit_in_account_currency": 3080.01,
+				"cost_center": "Main - TC",
+			},
+			{
+				"account": "Contributions - TC",
+				"debit_in_account_currency": 780.0,
+				"credit_in_account_currency": 0.0,
+				"cost_center": "Main - TC",
+			},
+			{
+				"account": "Contributions Payable - TC",
+				"debit_in_account_currency": 0.0,
+				"credit_in_account_currency": 780.0,
+				"cost_center": "Main - TC",
+			},
+			{
+				"account": "Insurance - TC",
+				"debit_in_account_currency": 10.0,
+				"credit_in_account_currency": 0.0,
+				"cost_center": "Main - TC",
+			},
+			{
+				"account": "Insurance Payable - TC",
+				"debit_in_account_currency": 0.0,
+				"credit_in_account_currency": 10.0,
+				"cost_center": "Main - TC",
+			},
+			{
+				"account": "TFR - TC",
+				"debit_in_account_currency": 74.1,
+				"credit_in_account_currency": 0.0,
+				"cost_center": "Main - TC",
+			},
+			{
+				"account": "TFR Payable - TC",
+				"debit_in_account_currency": 0.0,
+				"credit_in_account_currency": 74.1,
+				"cost_center": "Main - TC",
+			},
 		]
 
 		self.assertEqual(build_employee_cost_accrual_accounts(rows, config, "Main - TC"), expected)

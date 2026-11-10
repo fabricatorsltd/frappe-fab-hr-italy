@@ -184,7 +184,9 @@ def get_submitted_journal_entries(rows: list[dict[str, Any]]) -> set[str]:
 
 
 def get_contract_type_accounts(company: str) -> dict[str, dict[str, str]]:
-	account_fields = [attr for _field, expense, payable, _label in ACCOUNT_COMPONENTS for attr in (expense, payable)]
+	account_fields = [
+		attr for _field, expense, payable, _label in ACCOUNT_COMPONENTS for attr in (expense, payable)
+	]
 	rows = frappe.get_all(
 		CONTRACT_TYPE_ACCOUNTS_DOCTYPE,
 		filters={"parenttype": "Company", "parent": company, "parentfield": CONTRACT_TYPE_ACCOUNTS_FIELD},

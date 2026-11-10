@@ -4,6 +4,7 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
+import frappe
 from frappe.exceptions import ValidationError
 
 from fab_hr_italy.company_setup import (
@@ -111,20 +112,40 @@ class TestCompanySetup(unittest.TestCase):
 		with patch("fab_hr_italy.company_setup.frappe.throw", side_effect=raise_validation_error):
 			validate_company_cost_setup(document)
 
-	def test_validate_company_cost_setup_refuses_contract_type_account_of_another_company(self):
+	def validate_contract_type_row(self, row, account):
 		document = build_company(
 			fab_hri_post_company_cost_to_payroll_entry=0,
-			fab_hri_contract_type_accounts=[
-				SimpleNamespace(contract_type="COLLABORATOR", gross_pay_expense_account="Fees - OTHER"),
-			],
+			fab_hri_contract_type_accounts=[SimpleNamespace(contract_type="COLLABORATOR", **row)],
 		)
+		values = {"company": "Fabricators", "is_group": 0, "disabled": 0, "root_type": "Expense"}
+		values.update(account)
 
 		with (
-			patch("fab_hr_italy.company_setup.frappe.get_cached_value", return_value="Other Company"),
+			patch("fab_hr_italy.company_setup.frappe.get_cached_value", return_value=frappe._dict(values)),
 			patch("fab_hr_italy.company_setup.frappe.throw", side_effect=raise_validation_error),
-			self.assertRaisesRegex(ValidationError, "contract type COLLABORATOR must belong"),
 		):
 			validate_company_cost_setup(document)
+
+	def test_validate_company_cost_setup_accepts_a_contract_type_ledger_of_the_company(self):
+		self.validate_contract_type_row({"gross_pay_expense_account": "Fees - TC"}, {})
+		self.validate_contract_type_row(
+			{"payroll_payable_account": "Fees Payable - TC"}, {"root_type": "Liability"}
+		)
+
+	def test_validate_company_cost_setup_refuses_an_unfit_contract_type_account(self):
+		cases = (
+			({"gross_pay_expense_account": "Fees - OTHER"}, {"company": "Other Company"}),
+			({"gross_pay_expense_account": "Expenses - TC"}, {"is_group": 1}),
+			({"gross_pay_expense_account": "Old Fees - TC"}, {"disabled": 1}),
+			({"gross_pay_expense_account": "Payable - TC"}, {"root_type": "Liability"}),
+			({"payroll_payable_account": "Fees - TC"}, {"root_type": "Expense"}),
+		)
+		for row, account in cases:
+			with (
+				self.subTest(row=row, account=account),
+				self.assertRaisesRegex(ValidationError, "COLLABORATOR"),
+			):
+				self.validate_contract_type_row(row, account)
 
 	def test_validate_company_cost_setup_refuses_a_repeated_contract_type(self):
 		document = build_company(
