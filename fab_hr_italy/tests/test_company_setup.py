@@ -111,6 +111,36 @@ class TestCompanySetup(unittest.TestCase):
 		with patch("fab_hr_italy.company_setup.frappe.throw", side_effect=raise_validation_error):
 			validate_company_cost_setup(document)
 
+	def test_validate_company_cost_setup_refuses_contract_type_account_of_another_company(self):
+		document = build_company(
+			fab_hri_post_company_cost_to_payroll_entry=0,
+			fab_hri_contract_type_accounts=[
+				SimpleNamespace(contract_type="COLLABORATOR", gross_pay_expense_account="Fees - OTHER"),
+			],
+		)
+
+		with (
+			patch("fab_hr_italy.company_setup.frappe.get_cached_value", return_value="Other Company"),
+			patch("fab_hr_italy.company_setup.frappe.throw", side_effect=raise_validation_error),
+			self.assertRaisesRegex(ValidationError, "contract type COLLABORATOR must belong"),
+		):
+			validate_company_cost_setup(document)
+
+	def test_validate_company_cost_setup_refuses_a_repeated_contract_type(self):
+		document = build_company(
+			fab_hri_post_company_cost_to_payroll_entry=0,
+			fab_hri_contract_type_accounts=[
+				SimpleNamespace(contract_type="COLLABORATOR"),
+				SimpleNamespace(contract_type="collaborator"),
+			],
+		)
+
+		with (
+			patch("fab_hr_italy.company_setup.frappe.throw", side_effect=raise_validation_error),
+			self.assertRaisesRegex(ValidationError, "more than once"),
+		):
+			validate_company_cost_setup(document)
+
 	def test_validate_company_cost_setup_requires_default_payroll_payable_account(self):
 		document = build_company(
 			fab_hri_gross_pay_expense_account="Salari e stipendi - FAB",

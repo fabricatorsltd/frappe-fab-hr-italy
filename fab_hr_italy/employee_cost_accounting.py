@@ -20,6 +20,7 @@ MONTH_ENTRY_FIELDS = [
 	"indirect_cost_accrued_amount",
 	"indirect_cost_paid_amount",
 	"accrual_journal_entry",
+	"contract_type",
 ]
 POSTING_LOCKED_FIELDS = (
 	"company",
@@ -60,6 +61,8 @@ ACCOUNT_COMPONENTS = (
 		_("TFR accrual"),
 	),
 )
+CONTRACT_TYPE_ACCOUNTS_DOCTYPE = "Employee Cost Contract Type Account"
+CONTRACT_TYPE_ACCOUNTS_FIELD = "fab_hri_contract_type_accounts"
 
 
 @frappe.whitelist()
@@ -97,7 +100,12 @@ def post_employee_cost_month_to_gl(employee_cost_entry: str) -> dict[str, Any]:
 		}
 
 	config = ensure_employee_cost_gl_posting_enabled(entry.company)
-	accounts = build_employee_cost_accrual_accounts(rows, config, get_company_cost_center(entry.company))
+	accounts = build_employee_cost_accrual_accounts(
+		rows,
+		config,
+		get_company_cost_center(entry.company),
+		get_contract_type_accounts(entry.company),
+	)
 	if not accounts:
 		frappe.throw(_("No employee-cost accrual amounts are available to post for {0}.").format(
 			formatdate(entry.cost_month, "MM-yyyy")
@@ -175,49 +183,59 @@ def get_submitted_journal_entries(rows: list[dict[str, Any]]) -> set[str]:
 	)
 
 
+def get_contract_type_accounts(company: str) -> dict[str, dict[str, str]]:
+	account_fields = [attr for _field, expense, payable, _label in ACCOUNT_COMPONENTS for attr in (expense, payable)]
+	rows = frappe.get_all(
+		CONTRACT_TYPE_ACCOUNTS_DOCTYPE,
+		filters={"parenttype": "Company", "parent": company, "parentfield": CONTRACT_TYPE_ACCOUNTS_FIELD},
+		fields=["contract_type", *account_fields],
+		order_by="idx asc",
+	)
+	return {
+		normalize_contract_type(row.get("contract_type")): {
+			fieldname: row[fieldname] for fieldname in account_fields if row.get(fieldname)
+		}
+		for row in rows
+		if normalize_contract_type(row.get("contract_type"))
+	}
+
+
+def normalize_contract_type(value: Any) -> str:
+	return cstr(value).strip().upper()
+
+
 def build_employee_cost_accrual_accounts(
 	rows: list[dict[str, Any]],
 	config: CompanyCostConfig,
 	cost_center: str | None,
+	contract_type_accounts: dict[str, dict[str, str]] | None = None,
 ) -> list[dict[str, Any]]:
 	account_rows: dict[tuple[str, str], dict[str, Any]] = {}
+	contract_type_accounts = contract_type_accounts or {}
+
+	def add_component(get_amount, expense_attr: str, payable_attr: str) -> None:
+		# rows sharing the same account pair are summed before rounding, so a month
+		# without contract type overrides posts exactly the totals it always did
+		amounts: dict[tuple[str, str], list[float]] = {}
+		for row in rows:
+			overrides = contract_type_accounts.get(normalize_contract_type(row.get("contract_type"))) or {}
+			key = (
+				overrides.get(expense_attr) or getattr(config, expense_attr),
+				overrides.get(payable_attr) or getattr(config, payable_attr),
+			)
+			amounts.setdefault(key, []).append(get_amount(row))
+
+		for (expense_account, payable_account), key_amounts in amounts.items():
+			total_amount = round(sum(key_amounts), 2)
+			if not total_amount:
+				continue
+			add_accounting_row(account_rows, expense_account, "debit", total_amount, cost_center)
+			add_accounting_row(account_rows, payable_account, "credit", total_amount, cost_center)
 
 	for amount_field, expense_attr, payable_attr, _label in ACCOUNT_COMPONENTS:
-		total_amount = round(sum(flt(row.get(amount_field)) for row in rows), 2)
-		if not total_amount:
-			continue
+		add_component(lambda row, field=amount_field: flt(row.get(field)), expense_attr, payable_attr)
 
-		add_accounting_row(
-			account_rows,
-			getattr(config, expense_attr),
-			"debit",
-			total_amount,
-			cost_center,
-		)
-		add_accounting_row(
-			account_rows,
-			getattr(config, payable_attr),
-			"credit",
-			total_amount,
-			cost_center,
-		)
-
-	other_employee_accrual_total = round(sum(get_other_employee_accrual_amount(row) for row in rows), 2)
-	if other_employee_accrual_total:
-		add_accounting_row(
-			account_rows,
-			config.gross_pay_expense_account,
-			"debit",
-			other_employee_accrual_total,
-			cost_center,
-		)
-		add_accounting_row(
-			account_rows,
-			config.payroll_payable_account,
-			"credit",
-			other_employee_accrual_total,
-			cost_center,
-		)
+	add_component(get_other_employee_accrual_amount, "gross_pay_expense_account", "payroll_payable_account")
 
 	return list(account_rows.values())
 

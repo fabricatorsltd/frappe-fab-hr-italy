@@ -1,0 +1,92 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-11-10 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "contract_type",
+  "gross_pay_expense_account",
+  "payroll_payable_account",
+  "employer_contribution_expense_account",
+  "employer_contribution_payable_account",
+  "employer_insurance_expense_account",
+  "employer_insurance_payable_account",
+  "tfr_expense_account",
+  "tfr_payable_account"
+ ],
+ "fields": [
+  {
+   "description": "As stored on Employee Cost Entry, for example EMPLOYEE, COLLABORATOR or INTERN.",
+   "fieldname": "contract_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Contract Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "gross_pay_expense_account",
+   "fieldtype": "Link",
+   "label": "Gross Pay Expense Account",
+   "options": "Account",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "payroll_payable_account",
+   "fieldtype": "Link",
+   "label": "Payroll Payable Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "employer_contribution_expense_account",
+   "fieldtype": "Link",
+   "label": "Employer Contribution Expense Account",
+   "options": "Account",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "employer_contribution_payable_account",
+   "fieldtype": "Link",
+   "label": "Employer Contribution Payable Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "employer_insurance_expense_account",
+   "fieldtype": "Link",
+   "label": "Employer Insurance Expense Account",
+   "options": "Account",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "employer_insurance_payable_account",
+   "fieldtype": "Link",
+   "label": "Employer Insurance Payable Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "tfr_expense_account",
+   "fieldtype": "Link",
+   "label": "TFR Expense Account",
+   "options": "Account",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "tfr_payable_account",
+   "fieldtype": "Link",
+   "label": "TFR Payable Account",
+   "options": "Account"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-11-10 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HR Italy",
+ "name": "Employee Cost Contract Type Account",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "ASC",
+ "states": []
+}

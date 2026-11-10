@@ -155,3 +155,25 @@ msgstr "Contributi"
 #: fab_hr_italy/hr_italy/report/employee_cost_summary/employee_cost_summary.py
 msgid "Reimbursements"
 msgstr "Rimborsi"
+
+#: fab_hr_italy/install.py
+msgid "Accounts per Contract Type"
+msgstr "Conti per tipo di contratto"
+
+#: fab_hr_italy/install.py
+msgid "Employee Cost Entry rows of these contract types post to the accounts set here. An empty account falls back to the one above."
+msgstr "Le righe Employee Cost Entry di questi tipi di contratto vengono registrate sui conti indicati qui. Un conto vuoto usa quello sopra."
+
+#: fab_hr_italy/company_setup.py
+msgid "Contract type {0} is listed more than once in Accounts per Contract Type."
+msgstr "Il tipo di contratto {0} compare più di una volta in Conti per tipo di contratto."
+
+#: fab_hr_italy/company_setup.py
+msgid "Account {0} for contract type {1} must belong to company {2}."
+msgstr "Il conto {0} per il tipo di contratto {1} deve appartenere all'azienda {2}."
+
+msgid "Employee Cost Contract Type Account"
+msgstr "Conto costo del personale per tipo di contratto"
+
+msgid "As stored on Employee Cost Entry, for example EMPLOYEE, COLLABORATOR or INTERN."
+msgstr "Come registrato su Employee Cost Entry, ad esempio EMPLOYEE, COLLABORATOR o INTERN."

@@ -229,7 +229,30 @@ function addEmployeeCostHistoryButtons(frm) {
 	);
 }
 
+const CONTRACT_TYPE_ACCOUNT_FIELDS = [
+	"gross_pay_expense_account",
+	"payroll_payable_account",
+	"employer_contribution_expense_account",
+	"employer_contribution_payable_account",
+	"employer_insurance_expense_account",
+	"employer_insurance_payable_account",
+	"tfr_expense_account",
+	"tfr_payable_account",
+];
+
 frappe.ui.form.on("Company", {
+	setup(frm) {
+		for (const fieldname of CONTRACT_TYPE_ACCOUNT_FIELDS) {
+			frm.set_query(fieldname, "fab_hri_contract_type_accounts", () => ({
+				filters: {
+					company: frm.doc.name,
+					is_group: 0,
+					root_type: fieldname.endsWith("_expense_account") ? "Expense" : "Liability",
+				},
+			}));
+		}
+	},
+
 	refresh(frm) {
 		addEmployeeCostHistoryButtons(frm);
 	},

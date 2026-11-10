@@ -140,6 +140,24 @@ def get_custom_fields() -> dict[str, list[dict[str, object]]]:
 				"insert_after": "fab_hri_tfr_expense_account",
 				"depends_on": "eval:doc.fab_hri_post_company_cost_to_payroll_entry",
 			},
+			{
+				"fieldname": "fab_hri_contract_type_accounts_section",
+				"label": _("Accounts per Contract Type"),
+				"fieldtype": "Section Break",
+				"insert_after": "fab_hri_tfr_payable_account",
+				"depends_on": "eval:doc.fab_hri_post_company_cost_to_payroll_entry",
+				"collapsible": 1,
+			},
+			{
+				"fieldname": "fab_hri_contract_type_accounts",
+				"label": _("Accounts per Contract Type"),
+				"fieldtype": "Table",
+				"options": "Employee Cost Contract Type Account",
+				"insert_after": "fab_hri_contract_type_accounts_section",
+				"description": _(
+					"Employee Cost Entry rows of these contract types post to the accounts set here. An empty account falls back to the one above."
+				),
+			},
 		],
 		"Employee": [
 			{

@@ -77,6 +77,67 @@ class TestEmployeeCostAccounting(unittest.TestCase):
 		self.assertTrue(account_rows)
 		self.assertTrue(all(row["cost_center"] == "Main - FAB" for row in account_rows))
 
+	def test_build_employee_cost_accrual_accounts_splits_lines_by_contract_type(self):
+		config = make_full_cost_config()
+		rows = [
+			{"contract_type": "EMPLOYEE", "gross_monthly_amount": 1000, "employer_contribution_amount": 300, "inail_amount": 10, "tfr_accrual_amount": 74.1},
+			{"contract_type": "COLLABORATOR", "gross_monthly_amount": 2000, "employer_contribution_amount": 480},
+			{"contract_type": " collaborator ", "gross_monthly_amount": 500, "employer_contribution_amount": 120},
+		]
+		overrides = {
+			"COLLABORATOR": {
+				"gross_pay_expense_account": "Collaborator Fees - TC",
+				"employer_contribution_expense_account": "Collaborator Contributions - TC",
+				"employer_contribution_payable_account": "Collaborator Contributions Payable - TC",
+			}
+		}
+
+		account_rows = build_employee_cost_accrual_accounts(rows, config, "Main - TC", overrides)
+		lookup = {(row["account"], row["debit_in_account_currency"] > 0): row for row in account_rows}
+
+		self.assertEqual(lookup[("Gross Pay - TC", True)]["debit_in_account_currency"], 1000.0)
+		self.assertEqual(lookup[("Collaborator Fees - TC", True)]["debit_in_account_currency"], 2500.0)
+		# no payable override: both contract types credit the same payroll payable line
+		self.assertEqual(lookup[("Payroll Payable - TC", False)]["credit_in_account_currency"], 3500.0)
+		self.assertEqual(lookup[("Contributions - TC", True)]["debit_in_account_currency"], 300.0)
+		self.assertEqual(lookup[("Contributions Payable - TC", False)]["credit_in_account_currency"], 300.0)
+		self.assertEqual(lookup[("Collaborator Contributions - TC", True)]["debit_in_account_currency"], 600.0)
+		self.assertEqual(
+			lookup[("Collaborator Contributions Payable - TC", False)]["credit_in_account_currency"], 600.0
+		)
+		self.assertEqual(lookup[("TFR - TC", True)]["debit_in_account_currency"], 74.1)
+		self.assertEqual(len(account_rows), 11)
+		self.assertEqual(
+			sum(row["debit_in_account_currency"] for row in account_rows),
+			sum(row["credit_in_account_currency"] for row in account_rows),
+		)
+
+	def test_build_employee_cost_accrual_accounts_without_override_is_unchanged(self):
+		config = make_full_cost_config()
+		rows = [
+			{"contract_type": "EMPLOYEE", "gross_monthly_amount": 1000.005, "employer_contribution_amount": 300, "inail_amount": 10, "tfr_accrual_amount": 74.1},
+			{"contract_type": "COLLABORATOR", "gross_monthly_amount": 2000.004, "employer_contribution_amount": 480, "indirect_cost_accrued_amount": 100, "indirect_cost_paid_amount": 20},
+		]
+		expected = [
+			{"account": "Gross Pay - TC", "debit_in_account_currency": 3080.01, "credit_in_account_currency": 0.0, "cost_center": "Main - TC"},
+			{"account": "Payroll Payable - TC", "debit_in_account_currency": 0.0, "credit_in_account_currency": 3080.01, "cost_center": "Main - TC"},
+			{"account": "Contributions - TC", "debit_in_account_currency": 780.0, "credit_in_account_currency": 0.0, "cost_center": "Main - TC"},
+			{"account": "Contributions Payable - TC", "debit_in_account_currency": 0.0, "credit_in_account_currency": 780.0, "cost_center": "Main - TC"},
+			{"account": "Insurance - TC", "debit_in_account_currency": 10.0, "credit_in_account_currency": 0.0, "cost_center": "Main - TC"},
+			{"account": "Insurance Payable - TC", "debit_in_account_currency": 0.0, "credit_in_account_currency": 10.0, "cost_center": "Main - TC"},
+			{"account": "TFR - TC", "debit_in_account_currency": 74.1, "credit_in_account_currency": 0.0, "cost_center": "Main - TC"},
+			{"account": "TFR Payable - TC", "debit_in_account_currency": 0.0, "credit_in_account_currency": 74.1, "cost_center": "Main - TC"},
+		]
+
+		self.assertEqual(build_employee_cost_accrual_accounts(rows, config, "Main - TC"), expected)
+		# an override for a contract type the month does not carry changes nothing
+		self.assertEqual(
+			build_employee_cost_accrual_accounts(
+				rows, config, "Main - TC", {"INTERN": {"gross_pay_expense_account": "Intern Fees - TC"}}
+			),
+			expected,
+		)
+
 	def test_create_employee_cost_accrual_journal_entry_marks_party_not_required(self):
 		journal_entry = SimpleNamespace(insert=Mock(), submit=Mock(), name="ACC-JV-2026-00001")
 		frappe_stub = SimpleNamespace(
@@ -154,3 +215,18 @@ class TestEmployeeCostAccounting(unittest.TestCase):
 
 		journal_entry.cancel.assert_called_once_with()
 		frappe_stub.delete_doc.assert_not_called()
+
+
+def make_full_cost_config() -> CompanyCostConfig:
+	return CompanyCostConfig(
+		enabled=True,
+		post_to_payroll_entry=True,
+		gross_pay_expense_account="Gross Pay - TC",
+		payroll_payable_account="Payroll Payable - TC",
+		employer_contribution_expense_account="Contributions - TC",
+		employer_contribution_payable_account="Contributions Payable - TC",
+		employer_insurance_expense_account="Insurance - TC",
+		employer_insurance_payable_account="Insurance Payable - TC",
+		tfr_expense_account="TFR - TC",
+		tfr_payable_account="TFR Payable - TC",
+	)
