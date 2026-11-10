@@ -247,6 +247,7 @@ frappe.ui.form.on("Company", {
 				filters: {
 					company: frm.doc.name,
 					is_group: 0,
+					disabled: 0,
 					root_type: fieldname.endsWith("_expense_account") ? "Expense" : "Liability",
 				},
 			}));

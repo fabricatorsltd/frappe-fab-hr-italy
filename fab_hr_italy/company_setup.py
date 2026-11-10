@@ -274,11 +274,17 @@ def validate_contract_type_accounts(document: Any, company: str) -> None:
 			account = cstr(get_document_value(row, fieldname)).strip()
 			if not account:
 				continue
-			root_type = "Expense" if fieldname.endswith("_expense_account") else "Liability"
-			if not is_company_ledger(account, company, root_type):
+			if fieldname.endswith("_expense_account"):
+				if not is_company_ledger(account, company, "Expense"):
+					frappe.throw(
+						_("Contract type {0}: {1} must be an enabled Expense ledger of company {2}.").format(
+							contract_type, account, company
+						)
+					)
+			elif not is_company_ledger(account, company, "Liability"):
 				frappe.throw(
-					_("Contract type {0}: {1} must be an enabled {2} ledger of company {3}.").format(
-						contract_type, account, _(root_type), company
+					_("Contract type {0}: {1} must be an enabled Liability ledger of company {2}.").format(
+						contract_type, account, company
 					)
 				)
 
